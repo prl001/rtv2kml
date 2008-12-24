@@ -6,6 +6,7 @@ NAME
 SYNOPSIS
 
         rtv2kml.pl [--help|-h] [--towers|-t] [--bytype|b]
+                   [--icon=iconname|-i iconname]
                    [--state=state|-s state] csv_files...
 
 DESCRIPTION
@@ -18,7 +19,7 @@ DESCRIPTION
     a file.
 
     At each placemark a simple representation of the tower is drawn, and the
-    antennas at each site are rtepresented by a horizontal cross. The
+    antennas at each site are represented by a horizontal cross. The
     orientation of the cross is arbitrary, it does not indicate the
     orientation of directional antennas.
 
@@ -48,45 +49,12 @@ DESCRIPTION
     from UHF (short antenna elements).
 
     Antennas may be omnidirectional ("OD") or directional ("D"). The Radio
-    and Television Broadcasting Book does not indicate the direction(s) of
-    maximum radiated power for directional antennas.
+    and Television Broadcasting Book does not indicate the direction (or
+    directions) of maximum radiated power for directional antennas.
 
     The popup also gives the site name at the bottom of the panel:
 
         Telecom Tower BLACK MOUNTAIN
-
-DATA PREPARATION
-
-    The data in the Radio and Television Broadcasting Book Excel spreadsheet
-    must be converted into Excel CSV (Comma Separated Variable) format to
-    use in this program.
-
-    You need only convert those sheets from the Book whose data you are
-    interested in, for example you may only want to view the DTV (Digital
-    TV) sheet.
-
-    To convert, load the spreadsheet into Excel, click on the tab for the
-    sheet you want to convert, and then select "File>Save As...". In the
-    file browser, select "CSV (Comma Delimited) *.csv" in "Save as type:",
-    set the file name, then click "Save".
-
-    Click "OK" in the warning box saying thet "the selected file type does
-    not support workbooks", and click "Yes" in the warning box that says
-    that the spreadsheet may contain features not supported by the CSV file
-    format.
-
-    Repeat this procedure, using different file names, for each sheet of the
-    spreadsheet you want to convert.
-
-    NB: There is nothing in the TV and DTV CSV files that allows *rtv2kml*
-    to distinguish the data of the analog and digital transmitters. However,
-    if the TV and DTV data is saved into files whose names contain the
-    strings "AnalogTV" and "DigitalTV" respectively, then the ".kml" files
-    will hold the placemarks for analog and digital TV in separte folders
-    ("Analog TV" and "Digital TV"). For example, you might call the files
-    "DigitalTVTransmitters.csv" and "AnalogTVTransmitters.csv". Otherwise,
-    all TV transmitters that can't be recognised from the file name is
-    placed in a "TV" folder.
 
 ARGUMENTS
 
@@ -124,27 +92,209 @@ ARGUMENTS
         --state act --state NSW).
 
         Using a state specifier to only select the state you are interested
-        in can also produce a significantly smaller *.kml* file.
+        in can also produce a significantly smaller ".kml" file.
+
+    icon
+          --icon=iconname
+          -i iconname
+
+        Set the icon to be used on the transmitter placemarks. By default,
+        *iconname* is "electronics", which is an icon of a TV set. Another
+        distinctive icon, which looks like an old-fashioned oscilloscope
+        display, is "earthquake".
+
+        The default yellow pushpin used by Google Earth is "ylw-pushpin".
+        Other coloured pushpins have prefixes "blu-", "grn-", "ltblu-",
+        "pink-", "purple-" and "red-".
+
+        You can get a pallet of other icons to use by right-clicking on a
+        placemark in Google Earth and selecting "Properties". Click on the
+        icon button next to the Name type-in box to bring up the icon
+        pallet, and click on the icons to display their URLs. You can just
+        use the last part of the URL as the icon name, with or without the
+        ".png" extension.
+
+        Alternatively, you can use any 64x64 icon you like by giving is
+        complete "http:" or "file:" URL as the *iconname*.
 
 PREREQUSITES
 
-    Google Earth 4.x for viewing the ".kml" file in context.
+    *Google Earth 4.x* (<http://earth.google.com/download-earth.html>)
+    installed for viewing the ".kml" file in context.
+
+    *Microsoft Excel* to convert the ACMA spreadsheets to ".csv" format.
+    This may also be possible using Open Office
+    (<http://www.openoffice.org/>).
+
+    *Perl* scripting language. Installed by default in most Linux
+    configurations, installed by default in Mac OS X, but is not installed
+    in Windows XP or Vista.
+
+    *Active Perl* is a free *perl* implementation for Windows. It can be
+    obtained from <http://www.activestate.com/downloads/>. Simply follow the
+    prompts during installation. This will also allow Windows to recognise a
+    Perl script when it's run via Command Line.
+
+DATA PREPARATION
+
+    The data in the Radio and Television Broadcasting Book Excel spreadsheet
+    must be converted into Excel CSV (Comma Separated Variable) format to
+    use in this program.
+
+    You need only convert those sheets from the Book whose data you are
+    interested in, for example you may only want to use the DTV (Digital TV)
+    sheet.
+
+    To convert, load the spreadsheet into Excel, click on the tab for the
+    sheet you want to convert, and then select "File>Save As...". In the
+    file browser, select "CSV (Comma Delimited) *.csv" in "Save as type:",
+    set the file name, then click "Save".
+
+    Click "OK" in the warning box saying thet "the selected file type does
+    not support workbooks", and click "Yes" in the warning box that says
+    that the spreadsheet may contain features not supported by the CSV file
+    format.
+
+    Repeat this procedure, using different file names, for each sheet of the
+    spreadsheet you want to convert.
+
+    NB: There is nothing in the TV and DTV CSV files that allows *rtv2kml*
+    to distinguish the data of the analog and digital TV transmitters.
+    However, if the TV and DTV data is saved into files whose names contain
+    the strings "AnalogTV" and "DigitalTV" respectively, then the ".kml"
+    files will hold the placemarks for analog and digital TV in separate
+    folders ("Analog TV" and "Digital TV"). For example, you might call the
+    files "DigitalTVTransmitters.csv" and "AnalogTVTransmitters.csv".
+    Otherwise, all TV transmitters that can't be recognised from the file
+    name is placed in a "TV" folder.
+
+RUNNING RTV2KML ON WINDOWS SYSTEMS
+
+    Download
+        the *rtv2kml* package from
+        <http://www.beyonwizsoftware.net/software-b28/rtv2kml-convert-acma-r
+        adio-and-tv-station-data-into-google-earth-placemarks/0/>
+
+    Unzip
+        and note the directory location of the files. This is important as
+        in order to run a Command Line in Windows, you must point it towards
+        the unzipped files. For the sake of ease, putting the files in the
+        root directory (i.e. "C:\") will make access easier. Tick the "Use
+        Folder Names" option in the "Extract" dialog to keep things tidy.
+
+    Create the ".csv" file(s)
+        you want to use from Excel (as above). It is simplest to place
+        ".csv" files in same location as unzipped files.
+
+    Open
+        the Windows Command Line, found in the 'Start' menu under
+        'Accessories'.
+
+    Change to the directory
+        to where the files were unzipped. For example, if you unzipped the
+        files in the root directory of "C:", "C:\" type
+
+                cd C:\rtv2kml
+
+    To run the script,
+        type
+
+                rtv2kml.pl filenameyouselected.csv > filenameyouselected.kml
+
+        If that doesn't work, use
+
+                rtv2kml.pl filenameyouselected.csv > filenameyouselected.kml
+
+        Any options go before the ".csv" filename. For example:
+
+                rtv2kml.pl --towers filenameyouselected.csv > filenameyouselected.kml
+
+        This assumes that the ".csv" files are in the same directory as
+        "rtv2kml.pl". If they are somewhere else, you need to specify the
+        path to them, and to where the ".kml" file should go.
+
+    It's worked
+        if nothing more than a command prompt appears.
+
+    To use the new KML file
+        either double click on the KML file in Windows Explorer, or you can
+        load it from withing Google Earth as explained below.
+
+    Thanks to NPR on the Beyonwiz Forum
+    (<http://www.beyonwiz.com.au/phpbb2/index.php>) for most of this
+    section, and for being a Windows beta tester.
+
+INSTALLING & RUNNING RTV2KML ON UNIX-LIKE SYSTEMS
+
+    This section briefly describes how to use rtv2kml on Unix-like systems,
+    such as Linux, Mac OSX, Cygwin (<http://www.cygwin.com/>) or
+    manufacturer's versions of Unix.
+
+    If you're reading this, you've managed to download and unzip *rtv2kml*.
+
+    You can either simply run *rtv2kml* from its unzipped directory, or you
+    can install it in some suitable directory in your $PATH.
+
+    If you want to run it from its unzipped directory, it's simplest to
+    download and convert the ACMA data in the same directory.
+
+    Once you've done that, simply run:
+
+        ./rtv2kml *.csv > rtv.kml
+
+    Add in whatever options you'd like.
+
+    If you want to install *rtv2kml*, just run "make install" in its unziped
+    directory. That will install by default in "/usr/local", and it creates
+    a "bin" subdirectory if one doesn't yet exist there. You may not have
+    permission to do this as a normal user, so you may need to use "su" or
+    "sudo" to do the installation there.
+
+    Alternatively, you can install in "$HOME/bin" (the "bin" directory will
+    be created if it doesn't already exist) using
+
+        make "PREFIX=$HOME" install
+
+    To uninstall, run "make uninstall" in the same way that you ran the
+    install.
+
+USING THE PLACEMARKS IN GOOGLE EARTH
+
+    Once you've made the ".kml" file containing the transmitters, you can
+    run Google Earth and use "File>Open...", navigate to where the ".kml"
+    file is, and open it. Move the top level folder containing the
+    transmitter placemarks from "Temporary Places" into "My Places" if you
+    want to keep them in Google Earth permanently.
+
+    You can save a lot of space by zipping the ".kml" file and making a
+    ".kmz" file.
+
+    Windows systems:
+
+        zip rtv.kmz rtv.kml
+        del rtv.kml
+
+    Unix-like systems:
+
+        zip rtv.kmz rtv.kml
+        rm rtv.kml
 
 BUGS
 
     The Radio and Television Broadcasting Book only specifies locations of
-    transmitters to the nearest second of arc. While that sounds small, it
-    actually allows for an error of about +-50 metres.
+    transmitters to the nearest second of arc. While that sounds accurate,
+    it actually allows for an error of about 50 metres.
 
     The Abridged Molodenskiy transformation used to transform the AGD66
     latitudes & longitudes of the ACMA data to the WGS84 latitudes and
     longitudes used by Google Earth adds about another 10m uncertainty.
 
-    The transformation accuracy varies across Australia, and can be quite
-    inaccurate outside outside the mainland and Tasmania. The location
-    errors for the Lord Howe Island sites are about 130m. The Lord Howe
-    Island South site is shown *in the water* which is unlikely to be
-    correct! It's not clear how much of the location error is in the
+    The transformation accuracy varies across Australia, and can be more
+    inaccurate outside the mainland and Tasmania.
+
+    The location errors for the Lord Howe Island sites are about 130m. The
+    Lord Howe Island South site is shown *in the water* which is unlikely to
+    be correct! It's not clear how much of the location error is in the
     coordinate transformation and the lack of precision in the lat/long, and
     how much is actual location inaccuracy.
 
@@ -155,4 +305,7 @@ BUGS
     the midpoint of the antenna wire, between its two physical towers. AM
     transmitter towers are often much narrower than TV broadcast towers, and
     can often be best seen by their shadow.
+
+    The ACMA issues new broadcaster data every month. If you want to keep up
+    to date, you need to download and convert the data every month.
 

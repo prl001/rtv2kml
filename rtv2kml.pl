@@ -9,6 +9,7 @@ rtv2kml.pl - Create a Google Earth .kml file for Australian Ratio and TV Transmi
 =head1 SYNOPSIS
 
     rtv2kml.pl [--help|-h] [--towers|-t] [--bytype|b]
+               [--icon=iconname|-i iconname]
                [--state=state|-s state] csv_files...
 
 =head1 DESCRIPTION
@@ -22,7 +23,7 @@ in the spreadsheets on its standard output.
 Standard output would normally be redirected to a file.
 
 At each placemark a simple representation of the tower is drawn,
-and the antennas at each site are rtepresented by a horizontal cross.
+and the antennas at each site are represented by a horizontal cross.
 The orientation of the cross is arbitrary, it does not indicate the
 orientation of directional antennas.
 
@@ -53,47 +54,13 @@ In some locations VHF (longer antenna elements) broadcasts are on a
 different polarisation from UHF (short antenna elements).
 
 Antennas may be omnidirectional (C<OD>) or directional (C<D>).
-The Radio and Television Broadcasting Book does not indicate the
-direction(s) of maximum radiated power for directional antennas.
+The Radio and Television Broadcasting Book does not indicate the direction
+(or directions)
+of maximum radiated power for directional antennas.
 
 The popup also gives the site name at the bottom of the panel:
 
     Telecom Tower BLACK MOUNTAIN
-
-=head1 DATA PREPARATION
-
-The data in the Radio and Television Broadcasting Book Excel
-spreadsheet must be converted into Excel CSV (Comma Separated Variable)
-format to use in this program.
-
-You need only convert those sheets from the Book whose data you are
-interested in, for example you may only want to view the DTV (Digital
-TV) sheet.
-
-To convert, load the spreadsheet into Excel, click on the tab
-for the sheet you want to convert, and then select C<< File>Save As... >>.
-In the file browser, select C<CSV (Comma Delimited) *.csv>
-in C<Save as type:>, set the file name, then click C<Save>.
-
-Click C<OK> in the warning box saying thet "the selected file type
-does not support workbooks", and click C<Yes> in the warning box that says that
-the spreadsheet may contain features not supported by the CSV file format.
-
-Repeat this procedure, using different file names,
-for each sheet of the spreadsheet you want to convert.
-
-B<NB:> There is nothing in the TV and DTV CSV files that allows
-I<rtv2kml> to distinguish the data of the analog and digital transmitters.
-However, if the TV and DTV data is saved into files
-whose names contain the strings C<AnalogTV> and C<DigitalTV>
-respectively, then the C<.kml> files will hold the
-placemarks for analog and digital TV in separte folders
-(C<Analog TV> and C<Digital TV>).
-For example, you might call the files C<DigitalTVTransmitters.csv>
-and C<AnalogTVTransmitters.csv>.
-Otherwise, all TV transmitters that can't be recognised from the file name
-is placed in a C<TV> folder.
-
 
 =head1 ARGUMENTS
 
@@ -139,19 +106,226 @@ Repeated B<--state> options may be used to include more than one state
 (e.g. B<--state act --state NSW>).
 
 Using a state specifier to only select the state you are interested
-in can also produce a significantly smaller I<.kml> file.
+in can also produce a significantly smaller C<.kml> file.
+
+=item icon
+
+  --icon=iconname
+  -i iconname
+
+Set the icon to be used on the transmitter placemarks. By default,
+I<iconname> is C<electronics>, which is an icon of a TV set.
+Another distinctive icon, which looks like an old-fashioned
+oscilloscope display,
+is C<earthquake>.
+
+The default yellow pushpin used by Google Earth is
+C<ylw-pushpin>. Other coloured pushpins have prefixes
+C<blu->, C<grn->, C<ltblu->, C<pink->, C<purple-> and C<red->.
+
+You can get a pallet of other icons to use by right-clicking on a placemark
+in Google Earth and selecting C<Properties>.
+Click on the icon button next to the Name type-in box to bring up the icon
+pallet, and click on the icons to display their URLs.
+You can just use the last part of the URL as the icon name, with
+or without the C<.png> extension.
+
+Alternatively, you can use any 64x64 icon you like by giving
+is complete C<http:> or C<file:> URL as the I<iconname>.
 
 =back
 
 =head1 PREREQUSITES
 
-Google Earth 4.x for viewing the C<.kml> file in context.
+I<Google Earth 4.x>
+(L<http://earth.google.com/download-earth.html>)
+installed for viewing the C<.kml> file in context.
+
+I<Microsoft Excel> to convert the ACMA spreadsheets to C<.csv> format.
+This may also be possible using Open Office (L<http://www.openoffice.org/>).
+
+I<Perl> scripting language.
+Installed by default in most Linux configurations,
+installed by default in Mac OS X,
+but is not installed in Windows XP or Vista.
+
+I<Active Perl> is a free I<perl> implementation for Windows.
+It can be obtained from L<http://www.activestate.com/downloads/>.
+Simply follow the prompts during installation.
+This will also allow Windows to recognise a Perl script when
+it's run via Command Line.
+
+=head1 DATA PREPARATION
+
+The data in the Radio and Television Broadcasting Book Excel
+spreadsheet must be converted into Excel CSV (Comma Separated Variable)
+format to use in this program.
+
+You need only convert those sheets from the Book whose data you are
+interested in, for example you may only want to use the DTV (Digital
+TV) sheet.
+
+To convert, load the spreadsheet into Excel, click on the tab
+for the sheet you want to convert, and then select C<< File>Save As... >>.
+In the file browser, select C<CSV (Comma Delimited) *.csv>
+in C<Save as type:>, set the file name, then click C<Save>.
+
+Click C<OK> in the warning box saying thet "the selected file type
+does not support workbooks", and click C<Yes> in the warning box that says that
+the spreadsheet may contain features not supported by the CSV file format.
+
+Repeat this procedure, using different file names,
+for each sheet of the spreadsheet you want to convert.
+
+B<NB:> There is nothing in the TV and DTV CSV files that allows
+I<rtv2kml> to distinguish the data of the analog and digital TV
+transmitters.
+However, if the TV and DTV data is saved into files
+whose names contain the strings C<AnalogTV> and C<DigitalTV>
+respectively, then the C<.kml> files will hold the
+placemarks for analog and digital TV in separate folders
+(C<Analog TV> and C<Digital TV>).
+For example, you might call the files C<DigitalTVTransmitters.csv>
+and C<AnalogTVTransmitters.csv>.
+Otherwise, all TV transmitters that can't be recognised from the file name
+is placed in a C<TV> folder.
+
+
+=head1 RUNNING RTV2KML ON WINDOWS SYSTEMS
+
+=over 4
+
+=item Download
+
+the I<rtv2kml> package from
+L<http://www.beyonwizsoftware.net/software-b28/rtv2kml-convert-acma-radio-and-tv-station-data-into-google-earth-placemarks/0/>
+
+=item Unzip
+
+and note the directory location of the files.
+This is important as in order to run a Command Line in Windows,
+you must point it towards the unzipped files.
+For the sake of ease, putting the files in the root directory
+(i.e. C<C:\>) will make access easier.
+Tick the C<Use Folder Names> option in the C<Extract> dialog
+to keep things tidy.
+
+=item Create the C<.csv> file(s)
+
+you want to use from Excel
+(as L<above|/DATA PREPARATION>).
+It is simplest to place C<.csv> files in same location as unzipped files.
+
+=item Open
+
+the Windows Command Line,
+found in the 'Start' menu under 'Accessories'.
+
+=item Change to the directory
+
+to where the files were unzipped. For example,
+if you unzipped the files in the root directory of C<C:>,  C<C:\>
+type
+
+        cd C:\rtv2kml
+
+=item To run the script,
+
+type
+
+        rtv2kml.pl filenameyouselected.csv > filenameyouselected.kml
+
+If that doesn't work, use
+
+        rtv2kml.pl filenameyouselected.csv > filenameyouselected.kml
+
+Any options go before the C<.csv> filename. For example:
+
+        rtv2kml.pl --towers filenameyouselected.csv > filenameyouselected.kml
+
+This assumes that the C<.csv> files are in the same directory as
+C<rtv2kml.pl>.
+If they are somewhere else, you need to specify the path to them,
+and to where the C<.kml> file should go.
+
+=item It's worked
+
+if nothing more than a command prompt appears.
+
+=item To use the new KML file
+
+either double click on the KML file in
+Windows Explorer, or you can load it from withing Google Earth
+as explained L<below|/USING THE PLACEMARKS IN GOOGLE EARTH>. 
+
+=back
+
+Thanks to NPR on the Beyonwiz Forum
+(L<http://www.beyonwiz.com.au/phpbb2/index.php>)
+for most of this section, and for being a Windows beta tester.
+
+=head1 INSTALLING & RUNNING RTV2KML ON UNIX-LIKE SYSTEMS
+
+This section briefly describes how to use rtv2kml on Unix-like systems,
+such as Linux, Mac OSX, Cygwin (L<http://www.cygwin.com/>) or
+manufacturer's versions of Unix.
+
+If you're reading this, you've managed to download and unzip
+I<rtv2kml>.
+
+You can either simply run I<rtv2kml> from its unzipped directory,
+or you can install it in some suitable directory in your C<$PATH>.
+
+If you want to run it from its unzipped directory, it's simplest
+to download and convert the ACMA data in the same directory.
+
+Once you've done that, simply run:
+
+    ./rtv2kml *.csv > rtv.kml
+
+Add in whatever options you'd like.
+
+If you want to install I<rtv2kml>, just run C<make install> in
+its unziped directory. That will install by default in C</usr/local>,
+and it creates a C<bin> subdirectory if one doesn't yet exist there.
+You may not have permission to do this as a normal user, so you
+may need to use C<su> or C<sudo> to do the installation there.
+
+Alternatively, you can install in C<$HOME/bin> (the C<bin> directory
+will be created if it doesn't already exist) using
+
+    make "PREFIX=$HOME" install
+
+To uninstall, run C<make uninstall> in the same way that you ran the install.
+
+=head1 USING THE PLACEMARKS IN GOOGLE EARTH
+
+Once you've made the C<.kml> file containing the transmitters,
+you can run Google Earth and use C<< File>Open... >>, navigate to
+where the C<.kml> file is, and open it.
+Move the top level folder containing the transmitter placemarks from
+C<Temporary Places> into C<My Places> if you want to keep them in Google Earth
+permanently.
+
+You can save a lot of space by zipping the C<.kml> file and making
+a C<.kmz> file.
+
+Windows systems:
+
+    zip rtv.kmz rtv.kml
+    del rtv.kml
+
+Unix-like systems:
+
+    zip rtv.kmz rtv.kml
+    rm rtv.kml
 
 =head1 BUGS
 
 The Radio and Television Broadcasting Book only specifies locations
-of transmitters to the nearest second of arc. While that sounds small,
-it actually allows for an error of about +-50 metres.
+of transmitters to the nearest second of arc.
+While that sounds accurate, it actually allows for an error
+of about 50 metres.
 
 The Abridged Molodenskiy transformation used to transform the
 AGD66 latitudes & longitudes of the ACMA data to the WGS84
@@ -159,7 +333,8 @@ latitudes and longitudes used by Google Earth adds about
 another 10m uncertainty.
 
 The transformation accuracy varies across Australia,
-and can be quite inaccurate outside outside the mainland and Tasmania.
+and can be more inaccurate outside the mainland and Tasmania.
+
 The location errors for the Lord Howe Island sites are about 130m.
 The Lord Howe Island South site is shown I<in the water>
 which is unlikely to be correct!
@@ -176,6 +351,10 @@ antenna wire, between its two physical towers.
 AM transmitter towers are often much narrower than TV broadcast towers,
 and can often be best seen by their shadow.
 
+The ACMA issues new broadcaster data every month.
+If you want to keep up to date,
+you need to download and convert the data every month.
+
 =cut
 
 use strict;
@@ -184,7 +363,7 @@ use warnings;
 use Getopt::Long;
 
 sub usage {
-    die "Usage: $0 [--help|-h] [--towers|-t]\n",
+    die "Usage: $0 [--help|-h] [--towers|-t] [--icon=iconname|-i iconname]\n",
         "                [--bytype|-b] [--state=state|-s state] csv_files...\n";
 }
 
@@ -202,7 +381,7 @@ my %state_names = (
 my %state_folders;
 my %latlong;
 
-my ($help, $simple_towers, $by_type);
+my ($help, $simple_towers, $by_type, $icon_name) = ((0) x 3, 'electronics');
 my (@only_states, %only_states);
 
 use constant PI      => 3.14159265358979323846;
@@ -385,6 +564,47 @@ sub description($$) {
     print "$indent</description>\n";
 }
 
+sub icon_style($$$) {
+    my ($name, $scale, $url) = @_;
+    printf '    <Style id="%s">
+      <IconStyle>%s
+        <Icon>
+          <href>%s</href>
+        </Icon>
+        <hotSpot x="0.5" y="0" xunits="fraction" yunits="fraction"/>
+      </IconStyle>
+      <ListStyle>
+      </ListStyle>
+    </Style>
+',	$name, ($scale != 1.0 ? "\n      <scale>$scale</scale>" : ''), $url;
+}
+
+sub icon_map($$$$) {
+    my ($name, $nname, $hname, $url) = @_;
+    printf '    <StyleMap id="%s">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#%s</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#%s</styleUrl>
+      </Pair>
+    </StyleMap>
+',	$name, $nname, $hname;
+}
+
+sub set_icon($$) {
+    my ($name, $url) = @_;
+    my $normal = 'sn_' . $name;
+    my $highlight = 'sh_' . $name;
+    my $map = 'msn_' . $name;
+    icon_style($normal, 1.0, $url);
+    icon_style($highlight, 1.18182, $url);
+    icon_map($map, $normal, $highlight, $url);
+    return $map;
+}
+
 my @square_offsets = (
     [ -1, -1 ],
     [  1, -1 ],
@@ -392,6 +612,11 @@ my @square_offsets = (
     [ -1,  1 ],
     [ -1, -1 ],
 );
+
+sub style_url($$) {
+    my ($indent, $refname) = @_;
+    textnode($indent, 'styleUrl', '#' . $refname);
+}
 
 sub lookat($$$$$$$$) {
     my ($indent, $altMode, $lon, $lat, $alt, $heading, $tilt, $range) = @_;
@@ -525,12 +750,26 @@ sub end_folder($) {
     print "$indent</Folder>\n";
 }
 
-sub placemark($$$) {
-    my ($indent, $site, $vis) = @_;
+sub start_document($$$$) {
+    my ($indent, $name, $desc, $open) = @_;
+    print "$indent<Document>\n";
+    textnode($indent.'  ','name',  $name);
+    description($indent.'  ', $desc);
+    textnode($indent.'  ', 'open', $open);
+}
+
+sub end_document($) {
+    my ($indent) = @_;
+    print "$indent</Document>\n";
+}
+
+sub placemark($$$$) {
+    my ($indent, $site, $vis, $icon_ref) = @_;
     return if(!@$site);
     my @stns = sort { $a->{callsign} cmp $b->{callsign} } @$site;
     print "$indent<Placemark>\n";
     textnode($indent.'  ', 'name', $stns[0]->{place});
+    textnode($indent.'  ', 'visibility', $vis);
     textnode($indent.'  ', 'address', $stns[0]->{sitename});
     my $desc;
     my ($maxh, $minh) = ($stns[0]->{height}) x 2;
@@ -558,7 +797,7 @@ sub placemark($$$) {
     lookat($indent.'  ', 'relativeToGround',
 		$stns[0]->{lon}, $stns[0]->{lat}, ($maxh+$minh)/2,
 		0, 30, 1000);
-    textnode($indent.'  ', 'visibility', $vis);
+    style_url($indent.'  ', $icon_ref);
     print "$indent  <MultiGeometry>\n";
     pyramid($indent.'    ',
 		$stns[0]->{lon}, $stns[0]->{lat},
@@ -580,14 +819,14 @@ sub placemark($$$) {
     print "$indent</Placemark>\n";
 }
 
-sub print_stations($$$) {
-    my ($indent, $band, $state) = @_;
+sub print_stations($$$$) {
+    my ($indent, $band, $state, $icon_ref) = @_;
     if(keys %{$state->{$band}}) {
 	start_folder($indent, "$band",
 		     "$band broadcast transmitters\n", 0);
 	foreach my $site (sort { $a->[0]->{place} cmp $b->[0]->{place} }
 					values %{$state->{$band}}) {
-	    placemark($indent.'  ', $site, 0);
+	    placemark($indent.'  ', $site, 0, $icon_ref);
 	}
 	end_folder($indent);
     }
@@ -607,15 +846,26 @@ sub include_state($) {
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
 GetOptions(
-	'help|h'   => \$help,
-	'towers|t' => \$simple_towers,
-	'bytype|b' => \$by_type,
-	'state|s=s'  => \@only_states,
+	'help|h'	=> \$help,
+	'towers|t'	=> \$simple_towers,
+	'bytype|b'	=> \$by_type,
+	'state|s=s'	=> \@only_states,
+	'icon|i=s'	=> \$icon_name,
     ) or usage;
 
 $help and usage;
 
 my $tv = 'Unknown TV';
+
+my $icon_url = 'http://maps.google.com/mapfiles/kml/shapes/';
+
+if(substr($icon_name, 0, 5) eq 'http:'
+|| substr($icon_name, 0, 5) eq 'file:') {
+    $icon_url = $icon_name;
+} else {
+    $icon_url .= $icon_name;
+    $icon_url .= '.png' if(substr($icon_name, -5, 5) ne '.png');
+}
 
 foreach my $state_name (@only_states) {
     my $ucsn = uc $state_name;
@@ -693,8 +943,8 @@ sub has_stations(@) {
     return 0;
 }
 
-sub print_transmitters(@) {
-    my ($indent, @bands) = @_;
+sub print_transmitters($$$@) {
+    my ($indent, $is_document, $icon_ref, @bands) = @_;
     my ($rtv, $Rtv) = ('', '');
     if(has_stations(grep /radio/i, @bands)) {
 	$rtv = 'radio';
@@ -717,8 +967,14 @@ sub print_transmitters(@) {
     }
 
     if($show_folder) {
-	start_folder($indent, "Australian $Rtv",
-		     "Australian $rtv broadcast transmitters\n", 0);
+	if($is_document) {
+	    start_document($indent, "Australian $Rtv",
+			 "Australian $rtv broadcast transmitters\n", 0);
+	    $icon_ref = set_icon('rtv_tower', $icon_url);
+	} else {
+	    start_folder($indent, "Australian $Rtv",
+			 "Australian $rtv broadcast transmitters\n", 0);
+	}
 
 	foreach my $state_name (sort keys %state_folders) {
 	    if(include_state($state_name)
@@ -727,28 +983,35 @@ sub print_transmitters(@) {
 		start_folder($indent.'  ', $state_name,
 			     "$state_name $rtv broadcast transmitters\n", 0);
 		foreach my $band (@bands) {
-		    print_stations($indent.'      ', $band, $state)
+		    print_stations($indent.'      ', $band, $state, $icon_ref)
 			if($state->{$band});
 		}
 		end_folder($indent.'  ');
 	    }
 	}
 
-	end_folder($indent);
+	if($is_document) {
+	    end_document($indent);
+	} else {
+	    end_folder($indent);
+	}
     }
 }
 
 start_kml('');
+
 if($by_type) {
-    start_folder('  ', "Australian Broadcasters",
+    start_document('  ', "Australian Broadcasters",
 		 "Australian Broadcast transmitters\n", 1);
 
-    print_transmitters('    ', 'Digital TV', 'Analog TV', 'TV');
-    print_transmitters('    ', 'FM Radio', 'AM Radio');
+    my $icon_ref = set_icon('rtv_tower', $icon_url);
 
-    end_folder('  ');
+    print_transmitters('    ', 0, $icon_ref, 'Digital TV', 'Analog TV', 'TV');
+    print_transmitters('    ', 0, $icon_ref, 'FM Radio', 'AM Radio');
+
+    end_document('  ');
 } else {
-    print_transmitters('  ',
+    print_transmitters('  ', 1, undef,
 		'Digital TV', 'Analog TV', 'TV',
 		'FM Radio', 'AM Radio');
 }
