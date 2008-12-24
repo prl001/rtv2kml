@@ -40,7 +40,8 @@
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
 <pre>
-    rtv2kml.pl [--help|-h] [--towers|-t] [--bytype|b] csv_files...</pre>
+    rtv2kml.pl [--help|-h] [--towers|-t] [--bytype|b]
+               [--state=state|-s state] csv_files...</pre>
 <p>
 </p>
 <hr />
@@ -57,7 +58,7 @@ and the antennas at each site are rtepresented by a horizontal cross.
 The orientation of the cross is arbitrary, it does not indicate the
 orientation of directional antennas.</p>
 <p>The <strong>--towers</strong> option further simplifies the display of the tower to
-be a single line drawn fom the ground to 3 metres above the top antenna.</p>
+be a single line drawn from the ground to 3 metres above the top antenna.</p>
 <p>Each placemark has a <em>LookAt</em> attribute that sets the viewpoint to
 1km south of the antenna and 20 degrees above it when you doubleclick on
 the placemark.</p>
@@ -118,7 +119,7 @@ is placed in a <code>TV</code> folder.</p>
 <h1><a name="arguments">ARGUMENTS</a></h1>
 <p><em>Rtv2kml</em> takes the following option:</p>
 <dl>
-<dt><strong><a name="item_reloc">reloc</a></strong>
+<dt><strong><a name="item_help">help</a></strong>
 
 <dd>
 <pre>
@@ -128,7 +129,7 @@ is placed in a <code>TV</code> folder.</p>
 <dd>
 <p>Print a help message and exit.</p>
 </dd>
-<dt><strong>reloc</strong>
+<dt><strong><a name="item_towers">towers</a></strong>
 
 <dd>
 <pre>
@@ -139,7 +140,7 @@ is placed in a <code>TV</code> folder.</p>
 <p>Draw a simpler representation of the towers
 that results in a smaller file (about 50% smaller).</p>
 </dd>
-<dt><strong>reloc</strong>
+<dt><strong><a name="item_bytype">bytype</a></strong>
 
 <dd>
 <pre>
@@ -148,6 +149,28 @@ that results in a smaller file (about 50% smaller).</p>
 </dd>
 <dd>
 <p>Split radio and TV services into separate folders at the top level.</p>
+</dd>
+<dt><strong><a name="item_state">state</a></strong>
+
+<dd>
+<pre>
+  --state=state
+  -s state</pre>
+</dd>
+<dd>
+<p>Only include transmitters in the given state in the output.
+<em>State</em> may be one of 
+<strong>ACT</strong>, <strong>NSW</strong>, <strong>NT</strong>, <strong>QLD</strong>, <strong>SA</strong>, <strong>TAS</strong>, <strong>VIC</strong> or <strong>WA</strong>.
+Case is not distinguished.
+The full state names may also be used; if they have spaces
+they must be quoted (and <strong>Western Australia</strong> not <strong>West Australia</strong>)
+but there probably isn't much reason to do that.
+Repeated <strong>--state</strong> options may be used to include more than one state
+(e.g. <strong>--state act --state NSW</strong>).</p>
+</dd>
+<dd>
+<p>Using a state specifier to only select the state you are interested
+in can also produce a significantly smaller <em>.kml</em> file.</p>
 </dd>
 </dl>
 <p>
@@ -169,8 +192,12 @@ another 10m uncertainty.</p>
 <p>The transformation accuracy varies across Australia,
 and can be quite inaccurate outside outside the mainland and Tasmania.
 The location errors for the Lord Howe Island sites are about 130m.
-The Lord Howe Island South site.</p>
-<p>AM transmitters are typically not a single transmitter tower,
+The Lord Howe Island South site is shown <em>in the water</em>
+which is unlikely to be correct!
+It's not clear how much of the location error is in the coordinate
+transformation and the lack of precision in the lat/long, and how much
+is actual location inaccuracy.</p>
+<p>AM transmitters are typically not a single transmitter tower, they are
 more usually two towers with a horizontal antenna wire between them
 (and consequently horizontal polarisation),
 and the antenna wire is about 100-150m long.

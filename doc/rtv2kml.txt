@@ -5,7 +5,8 @@ NAME
 
 SYNOPSIS
 
-        rtv2kml.pl [--help|-h] [--towers|-t] [--bytype|b] csv_files...
+        rtv2kml.pl [--help|-h] [--towers|-t] [--bytype|b]
+                   [--state=state|-s state] csv_files...
 
 DESCRIPTION
 
@@ -22,7 +23,7 @@ DESCRIPTION
     orientation of directional antennas.
 
     The --towers option further simplifies the display of the tower to be a
-    single line drawn fom the ground to 3 metres above the top antenna.
+    single line drawn from the ground to 3 metres above the top antenna.
 
     Each placemark has a *LookAt* attribute that sets the viewpoint to 1km
     south of the antenna and 20 degrees above it when you doubleclick on the
@@ -91,24 +92,39 @@ ARGUMENTS
 
     *Rtv2kml* takes the following option:
 
-    reloc
+    help
           --help
           -h
 
         Print a help message and exit.
 
-    reloc
+    towers
           --towers
           -t
 
         Draw a simpler representation of the towers that results in a
         smaller file (about 50% smaller).
 
-    reloc
+    bytype
           --bytype
           -t
 
         Split radio and TV services into separate folders at the top level.
+
+    state
+          --state=state
+          -s state
+
+        Only include transmitters in the given state in the output. *State*
+        may be one of ACT, NSW, NT, QLD, SA, TAS, VIC or WA. Case is not
+        distinguished. The full state names may also be used; if they have
+        spaces they must be quoted (and Western Australia not West
+        Australia) but there probably isn't much reason to do that. Repeated
+        --state options may be used to include more than one state (e.g.
+        --state act --state NSW).
+
+        Using a state specifier to only select the state you are interested
+        in can also produce a significantly smaller *.kml* file.
 
 PREREQUSITES
 
@@ -127,10 +143,13 @@ BUGS
     The transformation accuracy varies across Australia, and can be quite
     inaccurate outside outside the mainland and Tasmania. The location
     errors for the Lord Howe Island sites are about 130m. The Lord Howe
-    Island South site.
+    Island South site is shown *in the water* which is unlikely to be
+    correct! It's not clear how much of the location error is in the
+    coordinate transformation and the lack of precision in the lat/long, and
+    how much is actual location inaccuracy.
 
-    AM transmitters are typically not a single transmitter tower, more
-    usually two towers with a horizontal antenna wire between them (and
+    AM transmitters are typically not a single transmitter tower, they are
+    more usually two towers with a horizontal antenna wire between them (and
     consequently horizontal polarisation), and the antenna wire is about
     100-150m long. The "tower" shown by *rtv2kml* is usually located near
     the midpoint of the antenna wire, between its two physical towers. AM

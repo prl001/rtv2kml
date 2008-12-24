@@ -8,7 +8,8 @@ rtv2kml.pl - Create a Google Earth .kml file for Australian Ratio and TV Transmi
 
 =head1 SYNOPSIS
 
-    rtv2kml.pl [--help|-h] [--towers|-t] [--bytype|b] csv_files...
+    rtv2kml.pl [--help|-h] [--towers|-t] [--bytype|b]
+               [--state=state|-s state] csv_files...
 
 =head1 DESCRIPTION
 
@@ -26,7 +27,7 @@ The orientation of the cross is arbitrary, it does not indicate the
 orientation of directional antennas.
 
 The B<--towers> option further simplifies the display of the tower to
-be a single line drawn fom the ground to 3 metres above the top antenna.
+be a single line drawn from the ground to 3 metres above the top antenna.
 
 Each placemark has a I<LookAt> attribute that sets the viewpoint to
 1km south of the antenna and 20 degrees above it when you doubleclick on
@@ -100,14 +101,14 @@ I<Rtv2kml> takes the following option:
 
 =over 4
 
-=item reloc
+=item help
 
   --help
   -h
 
 Print a help message and exit.
 
-=item reloc
+=item towers
 
   --towers
   -t
@@ -115,12 +116,30 @@ Print a help message and exit.
 Draw a simpler representation of the towers
 that results in a smaller file (about 50% smaller).
 
-=item reloc
+=item bytype
 
   --bytype
   -t
 
 Split radio and TV services into separate folders at the top level.
+
+=item state
+
+  --state=state
+  -s state
+
+Only include transmitters in the given state in the output.
+I<State> may be one of 
+B<ACT>, B<NSW>, B<NT>, B<QLD>, B<SA>, B<TAS>, B<VIC> or B<WA>.
+Case is not distinguished.
+The full state names may also be used; if they have spaces
+they must be quoted (and B<Western Australia> not B<West Australia>)
+but there probably isn't much reason to do that.
+Repeated B<--state> options may be used to include more than one state
+(e.g. B<--state act --state NSW>).
+
+Using a state specifier to only select the state you are interested
+in can also produce a significantly smaller I<.kml> file.
 
 =back
 
@@ -142,9 +161,13 @@ another 10m uncertainty.
 The transformation accuracy varies across Australia,
 and can be quite inaccurate outside outside the mainland and Tasmania.
 The location errors for the Lord Howe Island sites are about 130m.
-The Lord Howe Island South site.
+The Lord Howe Island South site is shown I<in the water>
+which is unlikely to be correct!
+It's not clear how much of the location error is in the coordinate
+transformation and the lack of precision in the lat/long, and how much
+is actual location inaccuracy.
 
-AM transmitters are typically not a single transmitter tower,
+AM transmitters are typically not a single transmitter tower, they are
 more usually two towers with a horizontal antenna wire between them
 (and consequently horizontal polarisation),
 and the antenna wire is about 100-150m long.
@@ -161,7 +184,8 @@ use warnings;
 use Getopt::Long;
 
 sub usage {
-    die "Usage: $0 [--help|-h] [--towers|-t] [--bytype|-b] csv_files...\n"
+    die "Usage: $0 [--help|-h] [--towers|-t]\n",
+        "                [--bytype|-b] [--state=state|-s state] csv_files...\n";
 }
 
 my %state_names = (
@@ -179,6 +203,7 @@ my %state_folders;
 my %latlong;
 
 my ($help, $simple_towers, $by_type);
+my (@only_states, %only_states);
 
 use constant PI      => 3.14159265358979323846;
 use constant DEG2RAD => PI / 180;
@@ -559,7 +584,7 @@ sub print_stations($$$) {
     my ($indent, $band, $state) = @_;
     if(keys %{$state->{$band}}) {
 	start_folder($indent, "$band",
-		     "$band radio broadcast transmitters\n", 0);
+		     "$band broadcast transmitters\n", 0);
 	foreach my $site (sort { $a->[0]->{place} cmp $b->[0]->{place} }
 					values %{$state->{$band}}) {
 	    placemark($indent.'  ', $site, 0);
@@ -574,17 +599,32 @@ sub add_station($) {
 	$stn;
 }
 
+sub include_state($) {
+    my ($state_name) = @_;
+    return !%only_states || $only_states{uc $state_name};
+}
+
 Getopt::Long::Configure qw/no_ignore_case bundling/;
 
 GetOptions(
 	'help|h'   => \$help,
 	'towers|t' => \$simple_towers,
 	'bytype|b' => \$by_type,
+	'state|s=s'  => \@only_states,
     ) or usage;
 
 $help and usage;
 
 my $tv = 'Unknown TV';
+
+foreach my $state_name (@only_states) {
+    my $ucsn = uc $state_name;
+    if($state_names{$ucsn}) {
+	$only_states{uc $state_names{$ucsn}} = 1;
+    } else {
+	$only_states{$ucsn} = 1;
+    }
+}
 
 while(<>) {
     if(/Area Served/) {
@@ -605,23 +645,29 @@ while(<>) {
 #	    $power, $siteid, $sitename, $lat, $lon, $chan)
     if(@F == 24) {
 	$F[18] = $state_names{$F[18]} if(exists($state_names{$F[18]}));
-	add_station(mk_station('AM Radio', @F[0,18,1,2,3,4,5,6,8,11,12,16,17]));
+	add_station(mk_station('AM Radio', @F[0,18,1,2,3,4,5,6,8,11,12,16,17]))
+	    if(include_state($F[18]));
     } elsif(@F == 22) {
 	$F[17] = $state_names{$F[17]} if(exists($state_names{$F[17]}));
-	add_station(mk_station('FM Radio', @F[0,17,1,2,3,4,5,6,7,10,11,15,16]));
+	add_station(mk_station('FM Radio', @F[0,17,1,2,3,4,5,6,7,10,11,15,16]))
+	    if(include_state($F[17]));
     } elsif(@F == 23) {
 	$F[17] = $state_names{$F[17]} if(exists($state_names{$F[17]}));
-	add_station(mk_station($tv, @F[0,17,1,2,3,4,5,6,7,10,11,15,16,18]));
+	add_station(mk_station($tv, @F[0,17,1,2,3,4,5,6,7,10,11,15,16,18]))
+	    if(include_state($F[17]));
     } elsif(@F == 28) {
 	$F[19] = $state_names{$F[19]} if(exists($state_names{$F[19]}));
 	if($F[27] eq 'AM Radio') {
-	    add_station(mk_station($F[27], @F[0,19,1,2,3,4,5,6,9,12,13,17,18,20]));
+	    add_station(mk_station($F[27], @F[0,19,1,2,3,4,5,6],
+					   @F[9,12,13,17,18,20]))
+		if(include_state($F[19]));
 	} elsif($F[27] eq 'FM Radio'
 	     || $F[27] eq 'Digital TV'
 	     || $F[27] eq 'Analog TV') {
 	    $F[2] /= 1000;
 	    add_station(mk_station($F[27], @F[0,19], ($F[1] ? $F[1] : $F[3]),
-					   @F[2,3,4,5,6,7,12,13,17,18,20]));
+					   @F[2,3,4,5,6,7,12,13,17,18,20]))
+		if(include_state($F[19]));
 	}
     } else {
 	warn "Unrecognised line: $_\n";
@@ -629,17 +675,35 @@ while(<>) {
     my $len = 13;
 }
 
+sub state_has_stations($@) {
+    my ($state_name, @bands) = @_;
+    my $has_stations;
+    my $state = $state_folders{$state_name};
+    foreach my $band (@bands) {
+	$has_stations |= keys %{$state->{$band}} if($state->{$band});
+    }
+    return $has_stations;
+}
+
+sub has_stations(@) {
+    my (@bands) = @_;
+    foreach my $state_name (sort keys %state_folders) {
+	return 1 if(state_has_stations($state_name, @bands));
+    }
+    return 0;
+}
+
 sub print_transmitters(@) {
     my ($indent, @bands) = @_;
     my ($rtv, $Rtv) = ('', '');
-    if(grep /radio/i, @bands) {
+    if(has_stations(grep /radio/i, @bands)) {
 	$rtv = 'radio';
 	$Rtv = 'Radio';
     }
-    if(grep /tv/i, @bands) {
+    if(has_stations(grep /tv/i, @bands)) {
 	if($rtv) {
-	$rtv .= ' & ';
-	$Rtv .= ' & ';
+	    $rtv .= ' & ';
+	    $Rtv .= ' & ';
 	}
 	$rtv .= 'TV';
 	$Rtv .= 'TV';
@@ -657,12 +721,9 @@ sub print_transmitters(@) {
 		     "Australian $rtv broadcast transmitters\n", 0);
 
 	foreach my $state_name (sort keys %state_folders) {
-	    my $has_stations;
-	    my $state = $state_folders{$state_name};
-	    foreach my $band (@bands) {
-		$has_stations |= keys %{$state->{$band}} if($state->{$band});
-	    }
-	    if($has_stations) {
+	    if(include_state($state_name)
+	    && state_has_stations($state_name, @bands)) {
+		my $state = $state_folders{$state_name};
 		start_folder($indent.'  ', $state_name,
 			     "$state_name $rtv broadcast transmitters\n", 0);
 		foreach my $band (@bands) {
@@ -682,11 +743,13 @@ if($by_type) {
     start_folder('  ', "Australian Broadcasters",
 		 "Australian Broadcast transmitters\n", 1);
 
-    print_transmitters('    ', 'Digital TV', 'Analog TV');
+    print_transmitters('    ', 'Digital TV', 'Analog TV', 'TV');
     print_transmitters('    ', 'FM Radio', 'AM Radio');
 
     end_folder('  ');
 } else {
-    print_transmitters('  ', 'Digital TV', 'Analog TV', 'FM Radio', 'AM Radio');
+    print_transmitters('  ',
+		'Digital TV', 'Analog TV', 'TV',
+		'FM Radio', 'AM Radio');
 }
 end_kml('');
