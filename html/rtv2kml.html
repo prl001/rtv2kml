@@ -1,0 +1,189 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>rtv2kml</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:rurban@x-ray.at" />
+</head>
+
+<body style="background-color: white">
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;rtv2kml</span></strong></big>
+</td></tr>
+</table>
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#data_preparation">DATA PREPARATION</a></li>
+	<li><a href="#arguments">ARGUMENTS</a></li>
+	<li><a href="#prerequsites">PREREQUSITES</a></li>
+	<li><a href="#bugs">BUGS</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<hr />
+<h1><a name="name">NAME</a></h1>
+<p>rtv2kml.pl - Create a Google Earth .kml file for Australian Ratio and TV Transmitters</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<pre>
+    rtv2kml.pl [--help|-h] [--towers|-t] [--bytype|b] csv_files...</pre>
+<p>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>Takes the Excel spreadsheets from the
+ACMA Radio and Television Broadcasting Book
+(<a href="http://acma.gov.au/WEB/STANDARD/pc=PC_9150">http://acma.gov.au/WEB/STANDARD/pc=PC_9150</a>)
+in CSV (Comma Separated Variable) format, and produces placemarks
+for all the licensed TV and radio broadcasting stations listed
+in the spreadsheets on its standard output.
+Standard output would normally be redirected to a file.</p>
+<p>At each placemark a simple representation of the tower is drawn,
+and the antennas at each site are rtepresented by a horizontal cross.
+The orientation of the cross is arbitrary, it does not indicate the
+orientation of directional antennas.</p>
+<p>The <strong>--towers</strong> option further simplifies the display of the tower to
+be a single line drawn fom the ground to 3 metres above the top antenna.</p>
+<p>Each placemark has a <em>LookAt</em> attribute that sets the viewpoint to
+1km south of the antenna and 20 degrees above it when you doubleclick on
+the placemark.</p>
+<p>The placemark popup lists the stations broadcasting from the site:</p>
+<pre>
+    ABC9A Canberra 205.625MHz (9A) 50.0kW (V, OD, h: 177m)</pre>
+<p>fields are: callsign/channel (<code>ABC9A</code>), area served (<code>Canberra</code>),
+frequency (<code>205.625MHz</code>), channel (<code>9A</code>), power (<code>50.0kW</code>),
+polarisation (<code>V</code>), antenna directionality (<code>OD</code>)
+and antenna height (<code>177m</code>).</p>
+<p>Power is the effective radiated power, in the direction of maximum
+radiation for directional antennas. For mixed polarisation, it
+is the maximum power for each polariation plane.</p>
+<p>Polarisation is <code>V</code> for vertical, <code>H</code> for horizontal and <code>M</code> for mixed.
+To recieve horizontal polarisation, the antenna elements should be horizontal
+and vertical for vertical polarisation.
+In some locations VHF (longer antenna elements) broadcasts are on a
+different polarisation from UHF (short antenna elements).</p>
+<p>Antennas may be omnidirectional (<code>OD</code>) or directional (<code>D</code>).
+The Radio and Television Broadcasting Book does not indicate the
+<code>direction(s)</code> of maximum radiated power for directional antennas.</p>
+<p>The popup also gives the site name at the bottom of the panel:</p>
+<pre>
+    Telecom Tower BLACK MOUNTAIN</pre>
+<p>
+</p>
+<hr />
+<h1><a name="data_preparation">DATA PREPARATION</a></h1>
+<p>The data in the Radio and Television Broadcasting Book Excel
+spreadsheet must be converted into Excel CSV (Comma Separated Variable)
+format to use in this program.</p>
+<p>You need only convert those sheets from the Book whose data you are
+interested in, for example you may only want to view the DTV (Digital
+TV) sheet.</p>
+<p>To convert, load the spreadsheet into Excel, click on the tab
+for the sheet you want to convert, and then select <code>File&gt;Save As...</code>.
+In the file browser, select <code>CSV (Comma Delimited) *.csv</code>
+in <code>Save as type:</code>, set the file name, then click <code>Save</code>.</p>
+<p>Click <code>OK</code> in the warning box saying thet ``the selected file type
+does not support workbooks'', and click <code>Yes</code> in the warning box that says that
+the spreadsheet may contain features not supported by the CSV file format.</p>
+<p>Repeat this procedure, using different file names,
+for each sheet of the spreadsheet you want to convert.</p>
+<p><strong>NB:</strong> There is nothing in the TV and DTV CSV files that allows
+<em>rtv2kml</em> to distinguish the data of the analog and digital transmitters.
+However, if the TV and DTV data is saved into files
+whose names contain the strings <code>AnalogTV</code> and <code>DigitalTV</code>
+respectively, then the <code>.kml</code> files will hold the
+placemarks for analog and digital TV in separte folders
+(<code>Analog TV</code> and <code>Digital TV</code>).
+For example, you might call the files <code>DigitalTVTransmitters.csv</code>
+and <code>AnalogTVTransmitters.csv</code>.
+Otherwise, all TV transmitters that can't be recognised from the file name
+is placed in a <code>TV</code> folder.</p>
+<p>
+</p>
+<hr />
+<h1><a name="arguments">ARGUMENTS</a></h1>
+<p><em>Rtv2kml</em> takes the following option:</p>
+<dl>
+<dt><strong><a name="item_reloc">reloc</a></strong>
+
+<dd>
+<pre>
+  --help
+  -h</pre>
+</dd>
+<dd>
+<p>Print a help message and exit.</p>
+</dd>
+<dt><strong>reloc</strong>
+
+<dd>
+<pre>
+  --towers
+  -t</pre>
+</dd>
+<dd>
+<p>Draw a simpler representation of the towers
+that results in a smaller file (about 50% smaller).</p>
+</dd>
+<dt><strong>reloc</strong>
+
+<dd>
+<pre>
+  --bytype
+  -t</pre>
+</dd>
+<dd>
+<p>Split radio and TV services into separate folders at the top level.</p>
+</dd>
+</dl>
+<p>
+</p>
+<hr />
+<h1><a name="prerequsites">PREREQUSITES</a></h1>
+<p>Google Earth 4.x for viewing the <code>.kml</code> file in context.</p>
+<p>
+</p>
+<hr />
+<h1><a name="bugs">BUGS</a></h1>
+<p>The Radio and Television Broadcasting Book only specifies locations
+of transmitters to the nearest second of arc. While that sounds small,
+it actually allows for an error of about +-50 metres.</p>
+<p>The Abridged Molodenskiy transformation used to transform the
+AGD66 latitudes &amp; longitudes of the ACMA data to the WGS84
+latitudes and longitudes used by Google Earth adds about
+another 10m uncertainty.</p>
+<p>The transformation accuracy varies across Australia,
+and can be quite inaccurate outside outside the mainland and Tasmania.
+The location errors for the Lord Howe Island sites are about 130m.
+The Lord Howe Island South site.</p>
+<p>AM transmitters are typically not a single transmitter tower,
+more usually two towers with a horizontal antenna wire between them
+(and consequently horizontal polarisation),
+and the antenna wire is about 100-150m long.
+The ``tower'' shown by <em>rtv2kml</em> is usually located near the midpoint of the
+antenna wire, between its two physical towers.
+AM transmitter towers are often much narrower than TV broadcast towers,
+and can often be best seen by their shadow.</p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" style="background-color: #cccccc" valign="middle">
+<big><strong><span class="block">&nbsp;rtv2kml</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>
