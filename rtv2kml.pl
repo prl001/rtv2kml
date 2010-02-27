@@ -64,7 +64,7 @@ The popup also gives the site name at the bottom of the panel:
 
 =head1 ARGUMENTS
 
-I<Rtv2kml> takes the following option:
+I<Rtv2kml> takes the following options:
 
 =over 4
 
@@ -149,11 +149,17 @@ Installed by default in most Linux configurations,
 installed by default in Mac OS X,
 but is not installed in Windows XP or Vista.
 
+I<Perl> is not needed if a pre-compiled version of I<rtv2kml> is used.
+
 I<Active Perl> is a free I<perl> implementation for Windows.
 It can be obtained from L<http://www.activestate.com/downloads/>.
 Simply follow the prompts during installation.
 This will also allow Windows to recognise a Perl script when
 it's run via Command Line.
+
+Module C<Text::CSV::Simple>. See the C<REAXME.txt> file in the distribution
+for details on how to install it if necessary.
+Not required for the pre-compiled version of I<rtv2kml>
 
 =head1 DATA PREPARATION
 
@@ -165,10 +171,11 @@ You need only convert those sheets from the Book whose data you are
 interested in, for example you may only want to use the DTV (Digital
 TV) sheet.
 
-To convert, load the spreadsheet into Excel, click on the tab
-for the sheet you want to convert, and then select C<< File>Save As... >>.
-In the file browser, select C<CSV (Comma Delimited) *.csv>
-in C<Save as type:>, set the file name, then click C<Save>.
+To convert, load the spreadsheet into Excel or OpenOffice Calc,
+click on the tab for the sheet you want to convert, and then select
+C<< File>Save As... >>.  In the file browser, select C<CSV (Comma
+Delimited) *.csv> in C<Save as type:>, set the file name, then click
+C<Save>.
 
 Click C<OK> in the warning box saying thet "the selected file type
 does not support workbooks", and click C<Yes> in the warning box that says that
@@ -177,18 +184,22 @@ the spreadsheet may contain features not supported by the CSV file format.
 Repeat this procedure, using different file names,
 for each sheet of the spreadsheet you want to convert.
 
-B<NB:> There is nothing in the TV and DTV CSV files that allows
+B<NB:> There is nothing in the TV, Digital TV and Digital Radio
+CSV files that allows
 I<rtv2kml> to distinguish the data of the analog and digital TV
-transmitters.
-However, if the TV and DTV data is saved into files
-whose names contain the strings C<AnalogTV> and C<DigitalTV>
-respectively, then the C<.kml> files will hold the
-placemarks for analog and digital TV in separate folders
-(C<Analog TV> and C<Digital TV>).
-For example, you might call the files C<DigitalTVTransmitters.csv>
-and C<AnalogTVTransmitters.csv>.
-Otherwise, all TV transmitters that can't be recognised from the file name
-is placed in a C<TV> folder.
+or digital Radio transmitters.
+However, if the TV, DTV and DR data is saved into files
+whose names contain the strings C<Analog> or C<Digital> and C<TV>,
+or C<Digital> and C<Radio>,
+then the C<.kml> files will hold the
+placemarks for analog and digital TV, and digital radio in separate folders
+(C<Analog TV>, C<Digital TV> and C<Digital Radio>).
+For example, you might call the files something like
+C<Digital_TV_Transmitters.csv> or
+C<Radio-Digital.csv>.
+Otherwise, all TV and Digital Radio transmitters that
+can't be recognised from the file name
+are placed in a C<TV> folder.
 
 
 =head1 RUNNING RTV2KML ON WINDOWS SYSTEMS
@@ -198,23 +209,30 @@ is placed in a C<TV> folder.
 =item Download
 
 the I<rtv2kml> package from
-L<http://www.beyonwizsoftware.net/software-b28/rtv2kml-convert-acma-radio-and-tv-station-data-into-google-earth-placemarks/0/>
+L<http://openwiz.org/wiki/Rtv2kml_Release>
+to a convenient location in your home folder.
 
 =item Unzip
 
 and note the directory location of the files.
 This is important as in order to run a Command Line in Windows,
 you must point it towards the unzipped files.
-For the sake of ease, putting the files in the root directory
-(i.e. C<C:\>) will make access easier.
 Tick the C<Use Folder Names> option in the C<Extract> dialog
 to keep things tidy.
+
+=item Copy
+
+the compiled version of I<rtv2kml> to a convenient location, say, C<C:>.
+
+	mkdir C:\rtv2kml
+	copy rtv2kml\Compiled\Windows\rtv2knm.exe c:\rtv2kml
 
 =item Create the C<.csv> file(s)
 
 you want to use from Excel
 (as L<above|/DATA PREPARATION>).
-It is simplest to place C<.csv> files in same location as unzipped files.
+It is simplest to place C<.csv> files in same location as
+the installed program.
 
 =item Open
 
@@ -223,8 +241,8 @@ found in the 'Start' menu under 'Accessories'.
 
 =item Change to the directory
 
-to where the files were unzipped. For example,
-if you unzipped the files in the root directory of C<C:>,  C<C:\>
+to where the program was installed. For example,
+if you installed the program in C<C:\rtv2kml>,
 type
 
         cd C:\rtv2kml
@@ -233,20 +251,26 @@ type
 
 type
 
-        rtv2kml.pl filenameyouselected.csv > filenameyouselected.kml
+        rtv2kml filenameyouselected.csv > filenameyouselected.kml
 
 If that doesn't work, use
 
-        rtv2kml.pl filenameyouselected.csv > filenameyouselected.kml
+        .\rtv2kml filenameyouselected.csv > filenameyouselected.kml
 
 Any options go before the C<.csv> filename. For example:
 
-        rtv2kml.pl --towers filenameyouselected.csv > filenameyouselected.kml
+        rtv2kml --towers filenameyouselected.csv > filenameyouselected.kml
 
 This assumes that the C<.csv> files are in the same directory as
 C<rtv2kml.pl>.
 If they are somewhere else, you need to specify the path to them,
 and to where the C<.kml> file should go.
+
+You can use filename wildcard characters to process multiple C<.csv> files:
+
+	rtv2kml --towers *.csv > filenameyouselected.kml
+
+To process all the C<.csv> files in the current directory.
 
 =item It's worked
 
@@ -286,7 +310,7 @@ Once you've done that, simply run:
 Add in whatever options you'd like.
 
 If you want to install I<rtv2kml>, just run C<make install> in
-its unziped directory. That will install by default in C</usr/local>,
+its unzipped directory. That will install by default in C</usr/local>,
 and it creates a C<bin> subdirectory if one doesn't yet exist there.
 You may not have permission to do this as a normal user, so you
 may need to use C<su> or C<sudo> to do the installation there.
@@ -296,7 +320,25 @@ will be created if it doesn't already exist) using
 
     make "PREFIX=$HOME" install
 
+I<Make> will tell you if you need to install C<Text::CSV::Simple>,
+and won't proceed until
+
+You can install a pre-compiled version (only available for
+MacOS and Cygwin), which doesn't need C<Text::CSV::Simple> to be installed,
+by using
+
+	make install_bin
+
+You can set C<PREFIX> as with C<install>.
+
 To uninstall, run C<make uninstall> in the same way that you ran the install.
+
+If C<Text::CSV::Simple> is needed, it can be installed using
+
+	cpan C<Text::CSV::Simple>
+
+There are more details about installation in the C<README.txt> file included
+in the C<.zip> package.
 
 =head1 USING THE PLACEMARKS IN GOOGLE EARTH
 
@@ -319,6 +361,10 @@ Unix-like systems:
 
     zip rtv.kmz rtv.kml
     rm rtv.kml
+
+You can make the placemarks file smaller when you build it by only
+selecting the states you are interested in (B<--L<state>> option) or by
+simplifying the drawing of the transmitter tower (B<--L<towers>> option).
 
 =head1 BUGS
 
@@ -361,6 +407,7 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use Text::CSV::Simple;
 
 sub usage {
     die "Usage: $0 [--help|-h] [--towers|-t] [--icon=iconname|-i iconname]\n",
@@ -855,6 +902,8 @@ GetOptions(
 
 $help and usage;
 
+@ARGV = map { glob $_ } @ARGV if($^O eq 'MSWin32');
+
 my $tv = 'Unknown TV';
 
 my $icon_url = 'http://maps.google.com/mapfiles/kml/shapes/';
@@ -876,53 +925,64 @@ foreach my $state_name (@only_states) {
     }
 }
 
-while(<>) {
-    if(/Area Served/) {
-	if($ARGV =~ /AnalogTV/) {
-	    $tv = 'Analog TV';
-	} elsif($ARGV =~ /DigitalTV/) {
-	    $tv = 'Digital TV';
-	} else {
+my $csv_parser = Text::CSV::Simple->new;
+
+foreach my $ARGV (@ARGV) {
+    my @csv_data = $csv_parser->read_file($ARGV);
+    foreach my $F (@csv_data) {
+	my @F = @$F;
+	if($F[0] =~ /Area Served/) {
 	    $tv = 'TV';
+	    if($ARGV =~ /TV/) {
+		if($ARGV =~ /Analog/) {
+		    $tv = 'Analog TV';
+		} elsif($ARGV =~ /Digital/) {
+		    $tv = 'Digital TV';
+		}
+	    } elsif($ARGV =~ /Radio/) {
+		$tv = 'Radio';
+		if($ARGV =~ /DigitalRadio/) {
+		    $tv = 'Digital Radio';
+		}
+	    }
+	    next;
 	}
-	next;
-    }
-    chomp;
-    substr $_, -1, 1, '' if(substr($_, -1, 1) eq "\r");
-    my @F = split /,/;
-#   mkstation($band, $place, $state, $callsign,
-#	    $freq, $type, $pol, $height, $pattern,
-#	    $power, $siteid, $sitename, $lat, $lon, $chan)
-    if(@F == 24) {
-	$F[18] = $state_names{$F[18]} if(exists($state_names{$F[18]}));
-	add_station(mk_station('AM Radio', @F[0,18,1,2,3,4,5,6,8,11,12,16,17]))
-	    if(include_state($F[18]));
-    } elsif(@F == 22) {
-	$F[17] = $state_names{$F[17]} if(exists($state_names{$F[17]}));
-	add_station(mk_station('FM Radio', @F[0,17,1,2,3,4,5,6,7,10,11,15,16]))
-	    if(include_state($F[17]));
-    } elsif(@F == 23) {
-	$F[17] = $state_names{$F[17]} if(exists($state_names{$F[17]}));
-	add_station(mk_station($tv, @F[0,17,1,2,3,4,5,6,7,10,11,15,16,18]))
-	    if(include_state($F[17]));
-    } elsif(@F == 28) {
-	$F[19] = $state_names{$F[19]} if(exists($state_names{$F[19]}));
-	if($F[27] eq 'AM Radio') {
-	    add_station(mk_station($F[27], @F[0,19,1,2,3,4,5,6],
-					   @F[9,12,13,17,18,20]))
-		if(include_state($F[19]));
-	} elsif($F[27] eq 'FM Radio'
-	     || $F[27] eq 'Digital TV'
-	     || $F[27] eq 'Analog TV') {
-	    $F[2] /= 1000;
-	    add_station(mk_station($F[27], @F[0,19], ($F[1] ? $F[1] : $F[3]),
-					   @F[2,3,4,5,6,7,12,13,17,18,20]))
-		if(include_state($F[19]));
+
+#		mkstation($band, $place, $state, $callsign,
+#		    $freq, $type, $pol, $height, $pattern,
+#		    $power, $siteid, $sitename, $lat, $lon, $chan)
+
+	if(@F == 24) {
+	    $F[18] = $state_names{$F[18]} if(exists($state_names{$F[18]}));
+	    add_station(mk_station('AM Radio', @F[0,18,1,2,3,4,5,6,8,11,12,16,17]))
+		if(include_state($F[18]));
+	} elsif(@F == 22) {
+	    $F[17] = $state_names{$F[17]} if(exists($state_names{$F[17]}));
+	    add_station(mk_station('FM Radio', @F[0,17,1,2,3,4,5,6,7,10,11,15,16]))
+		if(include_state($F[17]));
+	} elsif(@F == 23) {
+	    $F[17] = $state_names{$F[17]} if(exists($state_names{$F[17]}));
+	    add_station(mk_station($tv, @F[0,17,1,2,3,4,5,6,7,10,11,15,16,18]))
+		if(include_state($F[17]));
+	} elsif(@F == 28) {
+	    $F[19] = $state_names{$F[19]} if(exists($state_names{$F[19]}));
+	    if($F[27] eq 'AM Radio') {
+		add_station(mk_station($F[27], @F[0,19,1,2,3,4,5,6],
+					       @F[9,12,13,17,18,20]))
+		    if(include_state($F[19]));
+	    } elsif($F[27] eq 'FM Radio'
+		 || $F[27] eq 'Digital TV'
+		 || $F[27] eq 'Analog TV') {
+		$F[2] /= 1000;
+		add_station(mk_station($F[27], @F[0,19], ($F[1] ? $F[1] : $F[3]),
+					       @F[2,3,4,5,6,7,12,13,17,18,20]))
+		    if(include_state($F[19]));
+	    }
+	} else {
+	    warn "Unrecognised line: $_\n";
 	}
-    } else {
-	warn "Unrecognised line: $_\n";
+	my $len = 13;
     }
-    my $len = 13;
 }
 
 sub state_has_stations($@) {
@@ -1006,13 +1066,15 @@ if($by_type) {
 
     my $icon_ref = set_icon('rtv_tower', $icon_url);
 
-    print_transmitters('    ', 0, $icon_ref, 'Digital TV', 'Analog TV', 'TV');
-    print_transmitters('    ', 0, $icon_ref, 'FM Radio', 'AM Radio');
+    print_transmitters('    ', 0, $icon_ref,
+			    'Digital TV', 'Analog TV', 'TV');
+    print_transmitters('    ', 0, $icon_ref,
+			    'Digital Radio', 'FM Radio', 'AM Radio');
 
     end_document('  ');
 } else {
     print_transmitters('  ', 1, undef,
 		'Digital TV', 'Analog TV', 'TV',
-		'FM Radio', 'AM Radio');
+		'Digital Radio', 'FM Radio', 'AM Radio');
 }
 end_kml('');
