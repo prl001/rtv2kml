@@ -58,7 +58,7 @@ DESCRIPTION
 
 ARGUMENTS
 
-    *Rtv2kml* takes the following option:
+    *Rtv2kml* takes the following options:
 
     help
           --help
@@ -130,10 +130,16 @@ PREREQUSITES
     configurations, installed by default in Mac OS X, but is not installed
     in Windows XP or Vista.
 
+    *Perl* is not needed if a pre-compiled version of *rtv2kml* is used.
+
     *Active Perl* is a free *perl* implementation for Windows. It can be
     obtained from <http://www.activestate.com/downloads/>. Simply follow the
     prompts during installation. This will also allow Windows to recognise a
     Perl script when it's run via Command Line.
+
+    Module "Text::CSV::Simple". See the "REAXME.txt" file in the
+    distribution for details on how to install it if necessary. Not required
+    for the pre-compiled version of *rtv2kml*
 
 DATA PREPARATION
 
@@ -145,10 +151,10 @@ DATA PREPARATION
     interested in, for example you may only want to use the DTV (Digital TV)
     sheet.
 
-    To convert, load the spreadsheet into Excel, click on the tab for the
-    sheet you want to convert, and then select "File>Save As...". In the
-    file browser, select "CSV (Comma Delimited) *.csv" in "Save as type:",
-    set the file name, then click "Save".
+    To convert, load the spreadsheet into Excel or OpenOffice Calc, click on
+    the tab for the sheet you want to convert, and then select "File>Save
+    As...". In the file browser, select "CSV (Comma Delimited) *.csv" in
+    "Save as type:", set the file name, then click "Save".
 
     Click "OK" in the warning box saying thet "the selected file type does
     not support workbooks", and click "Yes" in the warning box that says
@@ -158,60 +164,73 @@ DATA PREPARATION
     Repeat this procedure, using different file names, for each sheet of the
     spreadsheet you want to convert.
 
-    NB: There is nothing in the TV and DTV CSV files that allows *rtv2kml*
-    to distinguish the data of the analog and digital TV transmitters.
-    However, if the TV and DTV data is saved into files whose names contain
-    the strings "AnalogTV" and "DigitalTV" respectively, then the ".kml"
-    files will hold the placemarks for analog and digital TV in separate
-    folders ("Analog TV" and "Digital TV"). For example, you might call the
-    files "DigitalTVTransmitters.csv" and "AnalogTVTransmitters.csv".
-    Otherwise, all TV transmitters that can't be recognised from the file
-    name is placed in a "TV" folder.
+    NB: There is nothing in the TV, Digital TV and Digital Radio CSV files
+    that allows *rtv2kml* to distinguish the data of the analog and digital
+    TV or digital Radio transmitters. However, if the TV, DTV and DR data is
+    saved into files whose names contain the strings "Analog" or "Digital"
+    and "TV", or "Digital" and "Radio", then the ".kml" files will hold the
+    placemarks for analog and digital TV, and digital radio in separate
+    folders ("Analog TV", "Digital TV" and "Digital Radio"). For example,
+    you might call the files something like "Digital_TV_Transmitters.csv" or
+    "Radio-Digital.csv". Otherwise, all TV and Digital Radio transmitters
+    that can't be recognised from the file name are placed in a "TV" folder.
 
 RUNNING RTV2KML ON WINDOWS SYSTEMS
 
     Download
-        the *rtv2kml* package from
-        <http://www.beyonwizsoftware.net/software-b28/rtv2kml-convert-acma-r
-        adio-and-tv-station-data-into-google-earth-placemarks/0/>
+        the *rtv2kml* package from <http://openwiz.org/wiki/Rtv2kml_Release>
+        to a convenient location in your home folder.
 
     Unzip
         and note the directory location of the files. This is important as
         in order to run a Command Line in Windows, you must point it towards
-        the unzipped files. For the sake of ease, putting the files in the
-        root directory (i.e. "C:\") will make access easier. Tick the "Use
-        Folder Names" option in the "Extract" dialog to keep things tidy.
+        the unzipped files. Tick the "Use Folder Names" option in the
+        "Extract" dialog to keep things tidy.
+
+    Copy
+        the compiled version of *rtv2kml* to a convenient location, say,
+        "C:".
+
+                mkdir C:\rtv2kml
+                copy rtv2kml\Compiled\Windows\rtv2knm.exe c:\rtv2kml
 
     Create the ".csv" file(s)
         you want to use from Excel (as above). It is simplest to place
-        ".csv" files in same location as unzipped files.
+        ".csv" files in same location as the installed program.
 
     Open
         the Windows Command Line, found in the 'Start' menu under
         'Accessories'.
 
     Change to the directory
-        to where the files were unzipped. For example, if you unzipped the
-        files in the root directory of "C:", "C:\" type
+        to where the program was installed. For example, if you installed
+        the program in "C:\rtv2kml", type
 
                 cd C:\rtv2kml
 
     To run the script,
         type
 
-                rtv2kml.pl filenameyouselected.csv > filenameyouselected.kml
+                rtv2kml filenameyouselected.csv > filenameyouselected.kml
 
         If that doesn't work, use
 
-                rtv2kml.pl filenameyouselected.csv > filenameyouselected.kml
+                .\rtv2kml filenameyouselected.csv > filenameyouselected.kml
 
         Any options go before the ".csv" filename. For example:
 
-                rtv2kml.pl --towers filenameyouselected.csv > filenameyouselected.kml
+                rtv2kml --towers filenameyouselected.csv > filenameyouselected.kml
 
         This assumes that the ".csv" files are in the same directory as
         "rtv2kml.pl". If they are somewhere else, you need to specify the
         path to them, and to where the ".kml" file should go.
+
+        You can use filename wildcard characters to process multiple ".csv"
+        files:
+
+                rtv2kml --towers *.csv > filenameyouselected.kml
+
+        To process all the ".csv" files in the current directory.
 
     It's worked
         if nothing more than a command prompt appears.
@@ -244,19 +263,37 @@ INSTALLING & RUNNING RTV2KML ON UNIX-LIKE SYSTEMS
 
     Add in whatever options you'd like.
 
-    If you want to install *rtv2kml*, just run "make install" in its unziped
-    directory. That will install by default in "/usr/local", and it creates
-    a "bin" subdirectory if one doesn't yet exist there. You may not have
-    permission to do this as a normal user, so you may need to use "su" or
-    "sudo" to do the installation there.
+    If you want to install *rtv2kml*, just run "make install" in its
+    unzipped directory. That will install by default in "/usr/local", and it
+    creates a "bin" subdirectory if one doesn't yet exist there. You may not
+    have permission to do this as a normal user, so you may need to use "su"
+    or "sudo" to do the installation there.
 
     Alternatively, you can install in "$HOME/bin" (the "bin" directory will
     be created if it doesn't already exist) using
 
         make "PREFIX=$HOME" install
 
+    *Make* will tell you if you need to install "Text::CSV::Simple", and
+    won't proceed until
+
+    You can install a pre-compiled version (only available for MacOS and
+    Cygwin), which doesn't need "Text::CSV::Simple" to be installed, by
+    using
+
+            make install_bin
+
+    You can set "PREFIX" as with "install".
+
     To uninstall, run "make uninstall" in the same way that you ran the
     install.
+
+    If "Text::CSV::Simple" is needed, it can be installed using
+
+            cpan C<Text::CSV::Simple>
+
+    There are more details about installation in the "README.txt" file
+    included in the ".zip" package.
 
 USING THE PLACEMARKS IN GOOGLE EARTH
 
@@ -278,6 +315,10 @@ USING THE PLACEMARKS IN GOOGLE EARTH
 
         zip rtv.kmz rtv.kml
         rm rtv.kml
+
+    You can make the placemarks file smaller when you build it by only
+    selecting the states you are interested in (--state option) or by
+    simplifying the drawing of the transmitter tower (--towers option).
 
 BUGS
 

@@ -4,7 +4,7 @@
 <head>
 <title>rtv2kml</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:rurban@x-ray.at" />
+<link rev="made" href="mailto:_postfix@neige.apple.com" />
 </head>
 
 <body style="background-color: white">
@@ -14,8 +14,10 @@
 </td></tr>
 </table>
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -26,13 +28,15 @@
 	<li><a href="#prerequsites">PREREQUSITES</a></li>
 	<li><a href="#data_preparation">DATA PREPARATION</a></li>
 	<li><a href="#running_rtv2kml_on_windows_systems">RUNNING RTV2KML ON WINDOWS SYSTEMS</a></li>
-	<li><a href="#installing___running_rtv2kml_on_unixlike_systems">INSTALLING &amp; RUNNING RTV2KML ON UNIX-LIKE SYSTEMS</a></li>
+	<li><a href="#installing___running_rtv2kml_on_unix_like_systems">INSTALLING &amp; RUNNING RTV2KML ON UNIX-LIKE SYSTEMS</a></li>
 	<li><a href="#using_the_placemarks_in_google_earth">USING THE PLACEMARKS IN GOOGLE EARTH</a></li>
 	<li><a href="#bugs">BUGS</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <hr />
@@ -92,9 +96,9 @@ of maximum radiated power for directional antennas.</p>
 </p>
 <hr />
 <h1><a name="arguments">ARGUMENTS</a></h1>
-<p><em>Rtv2kml</em> takes the following option:</p>
+<p><em>Rtv2kml</em> takes the following options:</p>
 <dl>
-<dt><strong><a name="item_help">help</a></strong>
+<dt><strong><a name="help" class="item">help</a></strong>
 
 <dd>
 <pre>
@@ -104,7 +108,7 @@ of maximum radiated power for directional antennas.</p>
 <dd>
 <p>Print a help message and exit.</p>
 </dd>
-<dt><strong><a name="item_towers">towers</a></strong>
+<dt><strong><a name="towers" class="item">towers</a></strong>
 
 <dd>
 <pre>
@@ -115,7 +119,7 @@ of maximum radiated power for directional antennas.</p>
 <p>Draw a simpler representation of the towers
 that results in a smaller file (about 50% smaller).</p>
 </dd>
-<dt><strong><a name="item_bytype">bytype</a></strong>
+<dt><strong><a name="bytype" class="item">bytype</a></strong>
 
 <dd>
 <pre>
@@ -125,7 +129,7 @@ that results in a smaller file (about 50% smaller).</p>
 <dd>
 <p>Split radio and TV services into separate folders at the top level.</p>
 </dd>
-<dt><strong><a name="item_state">state</a></strong>
+<dt><strong><a name="state" class="item">state</a></strong>
 
 <dd>
 <pre>
@@ -147,7 +151,7 @@ Repeated <strong>--state</strong> options may be used to include more than one s
 <p>Using a state specifier to only select the state you are interested
 in can also produce a significantly smaller <code>.kml</code> file.</p>
 </dd>
-<dt><strong><a name="item_icon">icon</a></strong>
+<dt><strong><a name="icon" class="item">icon</a></strong>
 
 <dd>
 <pre>
@@ -176,7 +180,7 @@ or without the <code>.png</code> extension.</p>
 </dd>
 <dd>
 <p>Alternatively, you can use any 64x64 icon you like by giving
-is complete <code>http:</code> or <code>file:</code> URL as the <em>iconname</em>.</p>
+is complete <code>http:</code> or <a href="#file"><code>file:</code></a> URL as the <em>iconname</em>.</p>
 </dd>
 </dl>
 <p>
@@ -192,11 +196,15 @@ This may also be possible using Open Office (<a href="http://www.openoffice.org/
 Installed by default in most Linux configurations,
 installed by default in Mac OS X,
 but is not installed in Windows XP or Vista.</p>
+<p><em>Perl</em> is not needed if a pre-compiled version of <em>rtv2kml</em> is used.</p>
 <p><em>Active Perl</em> is a free <em>perl</em> implementation for Windows.
 It can be obtained from <a href="http://www.activestate.com/downloads/">http://www.activestate.com/downloads/</a>.
 Simply follow the prompts during installation.
 This will also allow Windows to recognise a Perl script when
 it's run via Command Line.</p>
+<p>Module <code>Text::CSV::Simple</code>. See the <code>REAXME.txt</code> file in the distribution
+for details on how to install it if necessary.
+Not required for the pre-compiled version of <em>rtv2kml</em></p>
 <p>
 </p>
 <hr />
@@ -207,71 +215,87 @@ format to use in this program.</p>
 <p>You need only convert those sheets from the Book whose data you are
 interested in, for example you may only want to use the DTV (Digital
 TV) sheet.</p>
-<p>To convert, load the spreadsheet into Excel, click on the tab
-for the sheet you want to convert, and then select <code>File&gt;Save As...</code>.
-In the file browser, select <code>CSV (Comma Delimited) *.csv</code>
-in <code>Save as type:</code>, set the file name, then click <code>Save</code>.</p>
-<p>Click <code>OK</code> in the warning box saying thet ``the selected file type
-does not support workbooks'', and click <code>Yes</code> in the warning box that says that
+<p>To convert, load the spreadsheet into Excel or OpenOffice Calc,
+click on the tab for the sheet you want to convert, and then select
+<code>File&gt;Save As...</code>.  In the file browser, select <code>CSV (Comma
+Delimited) *.csv</code> in <code>Save as type:</code>, set the file name, then click
+<code>Save</code>.</p>
+<p>Click <code>OK</code> in the warning box saying thet &quot;the selected file type
+does not support workbooks&quot;, and click <code>Yes</code> in the warning box that says that
 the spreadsheet may contain features not supported by the CSV file format.</p>
 <p>Repeat this procedure, using different file names,
 for each sheet of the spreadsheet you want to convert.</p>
-<p><strong>NB:</strong> There is nothing in the TV and DTV CSV files that allows
+<p><strong>NB:</strong> There is nothing in the TV, Digital TV and Digital Radio
+CSV files that allows
 <em>rtv2kml</em> to distinguish the data of the analog and digital TV
-transmitters.
-However, if the TV and DTV data is saved into files
-whose names contain the strings <code>AnalogTV</code> and <code>DigitalTV</code>
-respectively, then the <code>.kml</code> files will hold the
-placemarks for analog and digital TV in separate folders
-(<code>Analog TV</code> and <code>Digital TV</code>).
-For example, you might call the files <code>DigitalTVTransmitters.csv</code>
-and <code>AnalogTVTransmitters.csv</code>.
-Otherwise, all TV transmitters that can't be recognised from the file name
-is placed in a <code>TV</code> folder.</p>
+or digital Radio transmitters.
+However, if the TV, DTV and DR data is saved into files
+whose names contain the strings <code>Analog</code> or <code>Digital</code> and <code>TV</code>,
+or <code>Digital</code> and <code>Radio</code>,
+then the <code>.kml</code> files will hold the
+placemarks for analog and digital TV, and digital radio in separate folders
+(<code>Analog TV</code>, <code>Digital TV</code> and <code>Digital Radio</code>).
+For example, you might call the files something like
+<code>Digital_TV_Transmitters.csv</code> or
+<code>Radio-Digital.csv</code>.
+Otherwise, all TV and Digital Radio transmitters that
+can't be recognised from the file name
+are placed in a <code>TV</code> folder.</p>
 <p>
 </p>
 <hr />
 <h1><a name="running_rtv2kml_on_windows_systems">RUNNING RTV2KML ON WINDOWS SYSTEMS</a></h1>
 <dl>
-<dt><strong><a name="item_download">Download</a></strong>
+<dt><strong><a name="download" class="item">Download</a></strong>
 
 <dd>
 <p>the <em>rtv2kml</em> package from
-<a href="http://www.beyonwizsoftware.net/software-b28/rtv2kml-convert-acma-radio-and-tv-station-data-into-google-earth-placemarks/0/">http://www.beyonwizsoftware.net/software-b28/rtv2kml-convert-acma-radio-and-tv-station-data-into-google-earth-placemarks/0/</a></p>
+<a href="http://openwiz.org/wiki/Rtv2kml_Release">http://openwiz.org/wiki/Rtv2kml_Release</a>
+to a convenient location in your home folder.</p>
 </dd>
 </li>
-<dt><strong><a name="item_unzip">Unzip</a></strong>
+<dt><strong><a name="unzip" class="item">Unzip</a></strong>
 
 <dd>
 <p>and note the directory location of the files.
 This is important as in order to run a Command Line in Windows,
 you must point it towards the unzipped files.
-For the sake of ease, putting the files in the root directory
-(i.e. <code>C:\</code>) will make access easier.
 Tick the <code>Use Folder Names</code> option in the <code>Extract</code> dialog
 to keep things tidy.</p>
 </dd>
 </li>
-<dt><strong><a name="item_file">Create the <code>.csv</code> <code>file(s)</code></a></strong>
+<dt><strong><a name="copy" class="item">Copy</a></strong>
+
+<dd>
+<p>the compiled version of <em>rtv2kml</em> to a convenient location, say, <code>C:</code>.</p>
+</dd>
+<dd>
+<pre>
+        mkdir C:\rtv2kml
+        copy rtv2kml\Compiled\Windows\rtv2knm.exe c:\rtv2kml</pre>
+</dd>
+</li>
+<dt><strong><a name="file" class="item">Create the <code>.csv</code> file(s)</a></strong>
 
 <dd>
 <p>you want to use from Excel
 (as <a href="#data_preparation">above</a>).
-It is simplest to place <code>.csv</code> files in same location as unzipped files.</p>
+It is simplest to place <code>.csv</code> files in same location as
+the installed program.</p>
 </dd>
 </li>
-<dt><strong><a name="item_open">Open</a></strong>
+<dt><strong><a name="open" class="item">Open</a></strong>
 
 <dd>
 <p>the Windows Command Line,
 found in the 'Start' menu under 'Accessories'.</p>
 </dd>
 </li>
-<dt><strong><a name="item_change_to_the_directory">Change to the directory</a></strong>
+<dt><strong><a name="change_to_the_directory" class="item">Change to the directory</a></strong>
 
 <dd>
-<p>to where the files were unzipped. For example,
-if you unzipped the files in the root directory of <code>C:</code>,  <code>C:\</code>
+<p>to where the program was installed. For example,
+if you installed the program in <code>C:\rtv2kml</code>,
 type</p>
 </dd>
 <dd>
@@ -279,28 +303,28 @@ type</p>
         cd C:\rtv2kml</pre>
 </dd>
 </li>
-<dt><strong><a name="item_to_run_the_script_2c">To run the script,</a></strong>
+<dt><strong><a name="to_run_the_script" class="item">To run the script,</a></strong>
 
 <dd>
 <p>type</p>
 </dd>
 <dd>
 <pre>
-        rtv2kml.pl filenameyouselected.csv &gt; filenameyouselected.kml</pre>
+        rtv2kml filenameyouselected.csv &gt; filenameyouselected.kml</pre>
 </dd>
 <dd>
 <p>If that doesn't work, use</p>
 </dd>
 <dd>
 <pre>
-        rtv2kml.pl filenameyouselected.csv &gt; filenameyouselected.kml</pre>
+        .\rtv2kml filenameyouselected.csv &gt; filenameyouselected.kml</pre>
 </dd>
 <dd>
 <p>Any options go before the <code>.csv</code> filename. For example:</p>
 </dd>
 <dd>
 <pre>
-        rtv2kml.pl --towers filenameyouselected.csv &gt; filenameyouselected.kml</pre>
+        rtv2kml --towers filenameyouselected.csv &gt; filenameyouselected.kml</pre>
 </dd>
 <dd>
 <p>This assumes that the <code>.csv</code> files are in the same directory as
@@ -308,14 +332,24 @@ type</p>
 If they are somewhere else, you need to specify the path to them,
 and to where the <code>.kml</code> file should go.</p>
 </dd>
+<dd>
+<p>You can use filename wildcard characters to process multiple <code>.csv</code> files:</p>
+</dd>
+<dd>
+<pre>
+        rtv2kml --towers *.csv &gt; filenameyouselected.kml</pre>
+</dd>
+<dd>
+<p>To process all the <code>.csv</code> files in the current directory.</p>
+</dd>
 </li>
-<dt><strong><a name="item_it_27s_worked">It's worked</a></strong>
+<dt><strong><a name="it_s_worked" class="item">It's worked</a></strong>
 
 <dd>
 <p>if nothing more than a command prompt appears.</p>
 </dd>
 </li>
-<dt><strong><a name="item_to_use_the_new_kml_file">To use the new KML file</a></strong>
+<dt><strong><a name="to_use_the_new_kml_file" class="item">To use the new KML file</a></strong>
 
 <dd>
 <p>either double click on the KML file in
@@ -330,7 +364,7 @@ for most of this section, and for being a Windows beta tester.</p>
 <p>
 </p>
 <hr />
-<h1><a name="installing___running_rtv2kml_on_unixlike_systems">INSTALLING &amp; RUNNING RTV2KML ON UNIX-LIKE SYSTEMS</a></h1>
+<h1><a name="installing___running_rtv2kml_on_unix_like_systems">INSTALLING &amp; RUNNING RTV2KML ON UNIX-LIKE SYSTEMS</a></h1>
 <p>This section briefly describes how to use rtv2kml on Unix-like systems,
 such as Linux, Mac OSX, Cygwin (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>) or
 manufacturer's versions of Unix.</p>
@@ -345,7 +379,7 @@ to download and convert the ACMA data in the same directory.</p>
     ./rtv2kml *.csv &gt; rtv.kml</pre>
 <p>Add in whatever options you'd like.</p>
 <p>If you want to install <em>rtv2kml</em>, just run <code>make install</code> in
-its unziped directory. That will install by default in <code>/usr/local</code>,
+its unzipped directory. That will install by default in <code>/usr/local</code>,
 and it creates a <code>bin</code> subdirectory if one doesn't yet exist there.
 You may not have permission to do this as a normal user, so you
 may need to use <code>su</code> or <code>sudo</code> to do the installation there.</p>
@@ -353,7 +387,20 @@ may need to use <code>su</code> or <code>sudo</code> to do the installation ther
 will be created if it doesn't already exist) using</p>
 <pre>
     make &quot;PREFIX=$HOME&quot; install</pre>
+<p><em>Make</em> will tell you if you need to install <code>Text::CSV::Simple</code>,
+and won't proceed until</p>
+<p>You can install a pre-compiled version (only available for
+MacOS and Cygwin), which doesn't need <code>Text::CSV::Simple</code> to be installed,
+by using</p>
+<pre>
+        make install_bin</pre>
+<p>You can set <code>PREFIX</code> as with <code>install</code>.</p>
 <p>To uninstall, run <code>make uninstall</code> in the same way that you ran the install.</p>
+<p>If <code>Text::CSV::Simple</code> is needed, it can be installed using</p>
+<pre>
+        cpan C&lt;Text::CSV::Simple&gt;</pre>
+<p>There are more details about installation in the <code>README.txt</code> file included
+in the <code>.zip</code> package.</p>
 <p>
 </p>
 <hr />
@@ -374,6 +421,9 @@ a <code>.kmz</code> file.</p>
 <pre>
     zip rtv.kmz rtv.kml
     rm rtv.kml</pre>
+<p>You can make the placemarks file smaller when you build it by only
+selecting the states you are interested in (<strong>--<a href="#state">state</a></strong> option) or by
+simplifying the drawing of the transmitter tower (<strong>--<a href="#towers">towers</a></strong> option).</p>
 <p>
 </p>
 <hr />
@@ -398,7 +448,7 @@ is actual location inaccuracy.</p>
 more usually two towers with a horizontal antenna wire between them
 (and consequently horizontal polarisation),
 and the antenna wire is about 100-150m long.
-The ``tower'' shown by <em>rtv2kml</em> is usually located near the midpoint of the
+The &quot;tower&quot; shown by <em>rtv2kml</em> is usually located near the midpoint of the
 antenna wire, between its two physical towers.
 AM transmitter towers are often much narrower than TV broadcast towers,
 and can often be best seen by their shadow.</p>
